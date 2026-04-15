@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tyler Reese | Golf Practice Plan Builder</title>
+  <style>
+    :root {
+      --navy: #16324f;
+      --maroon: #7a2e2e;
+      --cream: #f6f0df;
+      --sage: #e7f0e8;
+      --ink: #1f2a37;
+      --muted: #5f6b7a;
+      --card: rgba(255, 255, 255, 0.92);
+      --border: rgba(22, 50, 79, 0.12);
+      --shadow: 0 14px 30px rgba(0, 0, 0, 0.08);
+      --gold: #8b6b1f;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--ink);
+      background: linear-gradient(180deg, var(--cream) 0%, var(--sage) 100%);
+    }
+
+    a {
+      color: var(--maroon);
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .shell {
+      max-width: 1250px;
+      margin: 0 auto;
+      padding: 28px 20px 60px;
+    }
+
+    .topbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .hero,
+    .controls-card,
+    .output-card,
+    .tip-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      padding: 28px;
+      margin-bottom: 22px;
+    }
+
+    .hero h1 {
+      margin: 0 0 10px;
+      color: var(--navy);
+      font-size: clamp(2rem, 4vw, 2.75rem);
+    }
+
+    .hero p {
+      margin: 0;
+      line-height: 1.7;
+      max-width: 920px;
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 370px minmax(0, 1fr);
+      gap: 22px;
+      align-items: start;
+    }
+
+    .controls-card,
+    .output-card,
+    .tip-card {
+      padding: 24px;
+    }
+
+    .controls-card h2,
+    .output-card h2,
+    .tip-card h2 {
+      margin-top: 0;
+      color: var(--navy);
+    }
+
+    .field-block {
+      margin-bottom: 22px;
+    }
+
+    .field-block label.field-label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--navy);
+    }
+
+    .check-group {
+      display: grid;
+      gap: 10px;
+    }
+
+    .check-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px 14px;
+      border: 1px solid rgba(122, 46, 46, 0.18);
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    .check-card input {
+      margin-top: 3px;
+      transform: scale(1.1);
+    }
+
+    .check-card small {
+      display: block;
+      color: var(--muted);
+      margin-top: 4px;
+      line-height: 1.5;
+    }
+
+    select,
+    button {
+      font: inherit;
+    }
+
+    select {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(22, 50, 79, 0.18);
+      background: white;
+      color: var(--ink);
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .primary-btn {
+      background: var(--navy);
+      color: white;
+    }
+
+    .secondary-btn {
+      background: #e9eef3;
+      color: var(--navy);
+    }
+
+    .secondary-btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .helper-text,
+    .empty-text,
+    .error-text {
+      line-height: 1.7;
+      color: var(--muted);
+    }
+
+    .error-text {
+      color: #8b1e1e;
+      font-weight: 700;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin: 18px 0 20px;
+    }
+
+    .summary-box {
+      padding: 14px;
+      border-radius: 12px;
+      background: #f8fafc;
+      border: 1px solid rgba(22, 50, 79, 0.1);
+    }
+
+    .summary-box span {
+      display: block;
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .summary-box strong {
+      color: var(--navy);
+      font-size: 1.05rem;
+    }
+
+    .plan-list {
+      display: grid;
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .plan-item {
+      border: 1px solid rgba(22, 50, 79, 0.12);
+      border-radius: 14px;
+      background: #fff;
+      padding: 16px;
+    }
+
+    .plan-top {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 8px 14px;
+      margin-bottom: 8px;
+    }
+
+    .time-badge {
+      color: var(--navy);
+      font-weight: 700;
+    }
+
+    .area-badge {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: #eef3f8;
+      color: var(--navy);
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .plan-item h3 {
+      margin: 6px 0 8px;
+      color: var(--maroon);
+      font-size: 1.15rem;
+    }
+
+    .plan-item p {
+      margin: 0 0 8px;
+      line-height: 1.7;
+    }
+
+    .plan-meta {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: #faf8f2;
+      border: 1px solid rgba(139, 107, 31, 0.16);
+    }
+
+    .plan-meta p {
+      margin: 0 0 6px;
+      line-height: 1.6;
+    }
+
+    .plan-meta p:last-child {
+      margin-bottom: 0;
+    }
+
+    .plan-meta strong {
+      color: var(--gold);
+    }
+
+    .tip-card {
+      margin-top: 22px;
+    }
+
+    .tip-card ul {
+      margin: 0;
+      padding-left: 20px;
+      line-height: 1.8;
+    }
+
+    .footer-note {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 980px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .shell {
+        padding: 20px 14px 40px;
+      }
+
+      .hero,
+      .controls-card,
+      .output-card,
+      .tip-card {
+        padding: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="topbar">
+      <a href="index.html">Home</a>
+      <a href="resume.html">Résumé</a>
+      <a href="scratch.html">From-Scratch Page</a>
+      <a href="app.html">Web App</a>
+    </div>
+
+    <section class="hero">
+      <h1>Golf Practice Plan Builder</h1>
+      <p>
+        Build a practice session that matches where you plan to practice, what you want to work on, and how much time you have.
+        The app creates a detailed timeline with exact minute totals, specific drills, and clear goals like bucket counts, rep targets,
+        make percentages, or up-and-down scores.
+      </p>
+    </section>
+
+    <div class="main-grid">
+      <section class="controls-card">
+        <h2>Build your session</h2>
+
+        <div class="field-block">
+          <label class="field-label">Choose your practice area</label>
+          <div class="check-group">
+            <label class="check-card">
+              <input type="checkbox" id="rangeArea">
+              <span>
+                <strong>Driving range</strong>
+                <small>Full swing, driver, irons, wedges, and target practice.</small>
+              </span>
+            </label>
+
+            <label class="check-card">
+              <input type="checkbox" id="shortGameArea">
+              <span>
+                <strong>Chipping / putting area</strong>
+                <small>Short game, distance control, start line, pressure putting, and scoring drills.</small>
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <div class="field-block">
+          <label class="field-label" for="focusSelect">Focus area</label>
+          <select id="focusSelect"></select>
+        </div>
+
+        <div class="field-block">
+          <label class="field-label" for="timeSelect">How much time do you have?</label>
+          <select id="timeSelect">
+            <option value="15">15 minutes</option>
+            <option value="30">30 minutes</option>
+            <option value="45">45 minutes</option>
+            <option value="60" selected>60 minutes</option>
+            <option value="75">75 minutes</option>
+            <option value="90">90 minutes</option>
+            <option value="105">105 minutes</option>
+            <option value="120">120 minutes</option>
+          </select>
+        </div>
+
+        <div class="button-row">
+          <button class="primary-btn" id="generateBtn">Generate practice plan</button>
+          <button class="secondary-btn" id="copyBtn" disabled>Copy plan text</button>
+        </div>
+
+        <p class="footer-note">
+          Tip: if you choose both areas, the session usually starts with longer swings first and finishes in the short-game area,
+          so you end with touch, scoring, and pressure.
+        </p>
+      </section>
+
+      <section class="output-card">
+        <h2>Your practice plan</h2>
+        <div id="planOutput">
+          <p class="empty-text">
+            Select your practice area, choose an optional focus, set your time, and click
+            <strong>Generate practice plan</strong>.
+          </p>
+        </div>
+      </section>
+    </div>
+
+    <section class="tip-card">
+      <h2>How this app builds the plan</h2>
+      <ul>
+        <li>It adjusts the session based on whether you choose the range, the short-game area, or both.</li>
+        <li>It emphasizes your selected focus when one makes sense, but still keeps the session useful and balanced.</li>
+        <li>It assigns exact minutes so the session adds up to your selected total.</li>
+        <li>Each drill now includes a suggested rep target and a measurable success goal, so the plan feels more like a coach-led session.</li>
+      </ul>
+    </section>
+  </div>
+
+  <script>
+    const rangeCheckbox = document.getElementById("rangeArea");
+    const shortGameCheckbox = document.getElementById("shortGameArea");
+    const focusSelect = document.getElementById("focusSelect");
+    const timeSelect = document.getElementById("timeSelect");
+    const generateBtn = document.getElementById("generateBtn");
+    const copyBtn = document.getElementById("copyBtn");
+    const planOutput = document.getElementById("planOutput");
+
+    let latestPlainTextPlan = "";
+
+    const focusOptionsByMode = {
+      none: [
+        { value: "none", label: "No specific focus" }
+      ],
+      range: [
+        { value: "none", label: "No specific focus" },
+        { value: "contact", label: "Ball striking / contact" },
+        { value: "driver", label: "Driver accuracy" },
+        { value: "wedge", label: "Wedge distance control" },
+        { value: "approach", label: "Approach accuracy" },
+        { value: "pressure", label: "Scoring / pressure practice" }
+      ],
+      short: [
+        { value: "none", label: "No specific focus" },
+        { value: "chipping", label: "Chipping touch" },
+        { value: "puttingSpeed", label: "Putting speed control" },
+        { value: "puttingLine", label: "Putting start line" },
+        { value: "pressure", label: "Scoring / pressure practice" }
+      ],
+      both: [
+        { value: "none", label: "No specific focus" },
+        { value: "contact", label: "Ball striking / contact" },
+        { value: "driver", label: "Driver accuracy" },
+        { value: "wedge", label: "Wedge distance control" },
+        { value: "approach", label: "Approach accuracy" },
+        { value: "chipping", label: "Chipping touch" },
+        { value: "puttingSpeed", label: "Putting speed control" },
+        { value: "puttingLine", label: "Putting start line" },
+        { value: "pressure", label: "Scoring / pressure practice" }
+      ]
+    };
+
+    const rangeDrills = {
+      none: [
+        {
+          title: "Dynamic warm-up and half-swing wedges",
+          description: "Loosen up first, then hit smooth half-swings with a wedge. Focus on centered contact and a balanced finish.",
+          goalType: "rangeWarmup"
+        },
+        {
+          title: "Mid-iron start-line drill",
+          description: "Pick a narrow target and hit controlled 7-iron or 8-iron shots. Judge success by start line first, then distance.",
+          goalType: "ironStartLine"
+        },
+        {
+          title: "Wedge distance ladder",
+          description: "Rotate through 40, 60, and 80-yard shots. Try to land each ball inside a clear distance window.",
+          goalType: "wedgeLadder"
+        },
+        {
+          title: "Driver fairway finder challenge",
+          description: "Choose an imaginary fairway and hit drivers with a specific shape or start line. Track how many would finish in play.",
+          goalType: "driverFairway"
+        },
+        {
+          title: "Random target practice",
+          description: "Change club and target every shot to make the session feel more like the course instead of block practice.",
+          goalType: "randomRange"
+        },
+        {
+          title: "Pressure finish",
+          description: "End with a scoring test. Give yourself a point only for solid contact and a committed start line.",
+          goalType: "pressureRange"
+        }
+      ],
+      contact: [
+        {
+          title: "Impact pattern warm-up",
+          description: "Start with half-swings and easy wedges. Focus on low-point control and centered face contact before adding speed.",
+          goalType: "rangeWarmup"
+        },
+        {
+          title: "Center-contact ladder with short irons",
+          description: "Hit short irons with the goal of striking the middle of the face repeatedly. Reset after any clear mishit.",
+          goalType: "contactQuality"
+        },
+        {
+          title: "Alignment stick start-line drill",
+          description: "Use a very specific start line and keep the same tempo. Solid contact matters more than distance on this block.",
+          goalType: "ironStartLine"
+        },
+        {
+          title: "Three-ball quality sets",
+          description: "Hit three balls at a time and grade each set for strike quality. Step away between sets to avoid rushing.",
+          goalType: "contactSets"
+        },
+        {
+          title: "Randomized contact check",
+          description: "Change clubs every shot while keeping the same contact goal. This tests whether the better strike pattern holds up.",
+          goalType: "randomContact"
+        }
+      ],
+      driver: [
+        {
+          title: "Progressive warm-up into fairway woods",
+          description: "Warm up with wedges and mid-irons, then transition to longer clubs without losing balance or tempo.",
+          goalType: "rangeWarmup"
+        },
+        {
+          title: "Driver start-line drill",
+          description: "Pick a fairway width and focus on starting the ball on the correct side of the target line.",
+          goalType: "driverStartLine"
+        },
+        {
+          title: "Fairway finder challenge",
+          description: "Hit a series of drivers and count only shots that would stay in play. Commit to the same pre-shot routine each time.",
+          goalType: "driverFairway"
+        },
+        {
+          title: "Pressure tee-shot simulation",
+          description: "Alternate between conservative and aggressive targets the way you would on the course.",
+          goalType: "driverPressure"
+        },
+        {
+          title: "Finish with 10 scored drives",
+          description: "Hit 10 final tee shots and record how many would have advanced the hole successfully.",
+          goalType: "driverFinish"
+        }
+      ],
+      wedge: [
+        {
+          title: "Wedge contact warm-up",
+          description: "Start with short wedge swings to sharpen strike quality and distance awareness.",
+          goalType: "rangeWarmup"
+        },
+        {
+          title: "Distance ladder: 30 to 90 yards",
+          description: "Work through multiple wedge yardages and land each ball as close as possible to the intended carry number.",
+          goalType: "wedgeLadder"
+        },
+        {
+          title: "Flighted wedge window drill",
+          description: "Hit the same yardage with slightly different trajectories so you learn to control flight as well as distance.",
+          goalType: "wedgeFlight"
+        },
+        {
+          title: "One-ball wedge routine",
+          description: "Go through full routine for each wedge shot instead of rapid-fire hitting. Make the reps more realistic.",
+          goalType: "wedgeRoutine"
+        },
+        {
+          title: "Pressure distance test",
+          description: "Pick one number and try to hit several shots in a row inside the same distance window.",
+          goalType: "wedgePressure"
+        }
+      ],
+      approach: [
+        {
+          title: "Warm-up into stock iron swings",
+          description: "Build up from wedges to stock mid-iron shots while maintaining rhythm and clean contact.",
+          goalType: "rangeWarmup"
+        },
+        {
+          title: "Approach target block practice",
+          description: "Pick one green-sized target and focus on carry distance plus start line with your scoring irons.",
+          goalType: "approachStock"
+        },
+        {
+          title: "Club-change approach drill",
+          description: "Change targets and clubs often so you practice adapting rather than repeating the same shot mindlessly.",
+          goalType: "approachRandom"
+        },
+        {
+          title: "Front-middle-back simulation",
+          description: "Imagine different pin positions and choose the safest target for each one.",
+          goalType: "approachPins"
+        },
+        {
+          title: "Pressure approach finish",
+          description: "End by hitting a short series of must-execute approach shots with full routine and commitment.",
+          goalType: "approachPressure"
+        }
+      ],
+      pressure: [
+        {
+          title: "Purposeful warm-up",
+          description: "Use a controlled warm-up so the rest of the session feels like a test rather than a casual range session.",
+          goalType: "rangeWarmup"
+        },
+        {
+          title: "One-ball target challenge",
+          description: "Change target every shot and treat each rep like it counts. No quick retries.",
+          goalType: "randomRange"
+        },
+        {
+          title: "Fairway then green sequence",
+          description: "Simulate a tee shot followed by an approach shot. Repeat the pattern and score how many holes you 'win.'",
+          goalType: "holeSimulation"
+        },
+        {
+          title: "Consequence practice",
+          description: "Create a simple consequence for misses, such as restarting a streak or needing two makes in a row.",
+          goalType: "pressureRange"
+        },
+        {
+          title: "Pressure finish test",
+          description: "End with a short scoring game and write down the result so you can try to beat it next time.",
+          goalType: "pressureRange"
+        }
+      ]
+    };
+
+    const shortGameDrills = {
+      none: [
+        {
+          title: "Chip-and-putt warm-up",
+          description: "Start with easy chips and straight putts to get your touch calibrated before moving into tougher tasks.",
+          goalType: "shortWarmup"
+        },
+        {
+          title: "Landing spot chipping drill",
+          description: "Choose a landing spot and judge every rep by whether the ball starts on that spot and releases as expected.",
+          goalType: "landingSpot"
+        },
+        {
+          title: "Lag putting ladder",
+          description: "Putt from increasing distances with the goal of finishing every ball inside a tight three-foot circle.",
+          goalType: "lagPutting"
+        },
+        {
+          title: "Start-line gate drill",
+          description: "Set a narrow gate for short putts and focus on face control and rolling the ball through the gate cleanly.",
+          goalType: "puttingGate"
+        },
+        {
+          title: "Up-and-down challenge",
+          description: "Chip to one hole and finish every putt. Track how many times you get down in two strokes or fewer.",
+          goalType: "upAndDown"
+        },
+        {
+          title: "Pressure putting finish",
+          description: "End with a short series of must-make putts so you leave the green under a little pressure.",
+          goalType: "pressurePutting"
+        }
+      ],
+      chipping: [
+        {
+          title: "Short-game warm-up",
+          description: "Start with simple chips from an easy lie and focus on crisp contact and predictable rollout.",
+          goalType: "shortWarmup"
+        },
+        {
+          title: "Landing spot control block",
+          description: "Use the same landing area repeatedly until you can control first bounce and rollout more consistently.",
+          goalType: "landingSpot"
+        },
+        {
+          title: "Trajectory and rollout variations",
+          description: "Hit lower and slightly higher chips to learn how the same area can be played with different trajectories.",
+          goalType: "chipTrajectory"
+        },
+        {
+          title: "Around-the-green random practice",
+          description: "Move to different lies and targets so you practice adapting your setup and club choice.",
+          goalType: "aroundGreen"
+        },
+        {
+          title: "Up-and-down pressure game",
+          description: "Score each rep as if you were finishing a hole and try to beat a target number.",
+          goalType: "upAndDown"
+        }
+      ],
+      puttingSpeed: [
+        {
+          title: "Speed calibration warm-up",
+          description: "Roll a few putts across the practice green only thinking about pace, not mechanics.",
+          goalType: "puttWarmup"
+        },
+        {
+          title: "Ladder putting from multiple distances",
+          description: "Putt to progressively longer distances and try to stop every ball inside a narrow stopping zone.",
+          goalType: "lagPutting"
+        },
+        {
+          title: "Long-putt three-foot circle drill",
+          description: "From farther distances, judge success by whether the ball finishes inside a three-foot makeable range.",
+          goalType: "longPace"
+        },
+        {
+          title: "Uphill and downhill pace control",
+          description: "Practice different slopes so your speed control improves in more than one situation.",
+          goalType: "slopeSpeed"
+        },
+        {
+          title: "Pressure lag putting finish",
+          description: "End with a small challenge where every ball must finish inside the target zone before you stop.",
+          goalType: "lagPressure"
+        }
+      ],
+      puttingLine: [
+        {
+          title: "Short-putt start-line warm-up",
+          description: "Begin with short straight putts and focus on rolling the ball on your intended line.",
+          goalType: "puttWarmup"
+        },
+        {
+          title: "Gate drill",
+          description: "Use a narrow gate just in front of the ball or putter face. Success is rolling the ball cleanly through the gate.",
+          goalType: "puttingGate"
+        },
+        {
+          title: "Three to six-foot make drill",
+          description: "Work in the scoring range where start line matters the most and track your make percentage.",
+          goalType: "makeRate"
+        },
+        {
+          title: "Around-the-world putting",
+          description: "Putt from multiple angles around one hole to test whether your start line holds up under different looks.",
+          goalType: "aroundWorld"
+        },
+        {
+          title: "Pressure finish streak",
+          description: "Require a streak of made putts before you finish to add consequence and focus.",
+          goalType: "streakPutting"
+        }
+      ],
+      pressure: [
+        {
+          title: "Focused warm-up",
+          description: "Get comfortable on the green first, then shift quickly into drills where every rep has a consequence.",
+          goalType: "shortWarmup"
+        },
+        {
+          title: "Up-and-down scoring game",
+          description: "Chip and putt as if you are saving par. Keep score and create a target result.",
+          goalType: "upAndDown"
+        },
+        {
+          title: "Par-18 challenge",
+          description: "Play several short-game stations and score each one as a hole. Try to beat your best total.",
+          goalType: "par18"
+        },
+        {
+          title: "Must-make putting block",
+          description: "Finish short putts under pressure and restart the sequence if you miss.",
+          goalType: "streakPutting"
+        },
+        {
+          title: "Competitive finish",
+          description: "End with one final challenge that gives the session a clear success or failure result.",
+          goalType: "pressurePutting"
+        }
+      ]
+    };
+
+    function getSelectedAreas() {
+      const areas = [];
+      if (rangeCheckbox.checked) areas.push("range");
+      if (shortGameCheckbox.checked) areas.push("short");
+      return areas;
+    }
+
+    function getMode() {
+      const areas = getSelectedAreas();
+      if (areas.length === 0) return "none";
+      if (areas.length === 2) return "both";
+      return areas[0] === "range" ? "range" : "short";
+    }
+
+    function updateFocusOptions() {
+      const currentValue = focusSelect.value;
+      const mode = getMode();
+      const options = focusOptionsByMode[mode];
+
+      focusSelect.innerHTML = "";
+      options.forEach(option => {
+        const newOption = document.createElement("option");
+        newOption.value = option.value;
+        newOption.textContent = option.label;
+        focusSelect.appendChild(newOption);
+      });
+
+      const stillExists = options.some(option => option.value === currentValue);
+      focusSelect.value = stillExists ? currentValue : "none";
+    }
+
+    function roundToNearestFive(number) {
+      return Math.round(number / 5) * 5;
+    }
+
+    function calculateAreaMinutes(totalMinutes, focus, areas) {
+      if (areas.length === 1) {
+        return {
+          range: areas[0] === "range" ? totalMinutes : 0,
+          short: areas[0] === "short" ? totalMinutes : 0
+        };
+      }
+
+      let rangeWeight = 0.5;
+
+      if (focus === "contact" || focus === "driver" || focus === "approach") {
+        rangeWeight = 0.65;
+      } else if (focus === "wedge") {
+        rangeWeight = 0.6;
+      } else if (focus === "chipping" || focus === "puttingSpeed" || focus === "puttingLine") {
+        rangeWeight = 0.35;
+      } else if (focus === "pressure") {
+        rangeWeight = 0.5;
+      }
+
+      let rangeMinutes = roundToNearestFive(totalMinutes * rangeWeight);
+      let shortMinutes = totalMinutes - rangeMinutes;
+
+      if (totalMinutes >= 30) {
+        if (rangeMinutes < 15) {
+          rangeMinutes = 15;
+          shortMinutes = totalMinutes - rangeMinutes;
+        }
+        if (shortMinutes < 15) {
+          shortMinutes = 15;
+          rangeMinutes = totalMinutes - shortMinutes;
+        }
+      }
+
+      return { range: rangeMinutes, short: shortMinutes };
+    }
+
+    function splitMinutes(totalMinutes) {
+      const pieces = [];
+      let remaining = totalMinutes;
+
+      while (remaining > 0) {
+        if (remaining <= 20) {
+          pieces.push(remaining);
+          remaining = 0;
+        } else {
+          pieces.push(15);
+          remaining -= 15;
+        }
+      }
+
+      return pieces;
+    }
+
+    function getFocusKeyForArea(area, focus) {
+      if (area === "range") {
+        if (["contact", "driver", "wedge", "approach", "pressure"].includes(focus)) {
+          return focus;
+        }
+        return "none";
+      }
+
+      if (area === "short") {
+        if (["chipping", "puttingSpeed", "puttingLine", "pressure"].includes(focus)) {
+          return focus;
+        }
+        if (focus === "wedge") {
+          return "chipping";
+        }
+        return "none";
+      }
+
+      return "none";
+    }
+
+    function getDrillSet(area, focus) {
+      const key = getFocusKeyForArea(area, focus);
+      return area === "range" ? rangeDrills[key] : shortGameDrills[key];
+    }
+
+    function getPrescription(goalType, duration) {
+      const longBlock = duration >= 20;
+
+      const map = {
+        rangeWarmup: {
+          reps: longBlock ? "Hit about 24-30 balls, mostly wedges and short irons." : "Hit about 16-22 balls, mostly wedges and short irons.",
+          goal: "Finish the block feeling balanced and loose, with at least 70% of shots struck solidly."
+        },
+        ironStartLine: {
+          reps: longBlock ? "Hit 18-24 iron shots to one narrow target." : "Hit 12-18 iron shots to one narrow target.",
+          goal: "At least 60% should start on your intended line or within a small window around it."
+        },
+        wedgeLadder: {
+          reps: longBlock ? "Hit 24 balls: 8 each to three distances." : "Hit 18 balls: 6 each to three distances.",
+          goal: "Get at least 2/3 of the balls to finish inside your chosen distance window."
+        },
+        driverFairway: {
+          reps: longBlock ? "Hit 12-16 drivers to an imaginary fairway." : "Hit 8-12 drivers to an imaginary fairway.",
+          goal: "At least 60% should be playable tee shots that would stay in the fairway or first cut."
+        },
+        randomRange: {
+          reps: longBlock ? "Play 10-12 one-ball reps, changing club and target each time." : "Play 7-9 one-ball reps, changing club and target each time.",
+          goal: "Stick to full routine on every rep and produce at least half of the shots with your intended start line and contact."
+        },
+        pressureRange: {
+          reps: longBlock ? "Run 10-12 pressure reps with a consequence for each miss." : "Run 6-8 pressure reps with a consequence for each miss.",
+          goal: "Complete the challenge standard you set before moving on or finishing."
+        },
+        contactQuality: {
+          reps: longBlock ? "Hit 24-30 short-iron shots in small sets." : "Hit 15-20 short-iron shots in small sets.",
+          goal: "Grade each shot for strike quality and aim for at least 70% solid contact."
+        },
+        contactSets: {
+          reps: longBlock ? "Complete 8 sets of 3 balls." : "Complete 5-6 sets of 3 balls.",
+          goal: "Win at least half of the sets by producing 2 or more clearly solid strikes in each set."
+        },
+        randomContact: {
+          reps: longBlock ? "Hit 12-15 shots while changing club every rep." : "Hit 8-10 shots while changing club every rep.",
+          goal: "Keep the same strike quality standard and produce solid contact on at least 60% of reps."
+        },
+        driverStartLine: {
+          reps: longBlock ? "Hit 12-16 drivers with a very specific start-line gate." : "Hit 8-12 drivers with a very specific start-line gate.",
+          goal: "At least 60% should start inside your chosen start-line window."
+        },
+        driverPressure: {
+          reps: longBlock ? "Simulate 8-10 tee shots with full routine." : "Simulate 5-7 tee shots with full routine.",
+          goal: "Score at least half of the reps as playable tee balls under your rules."
+        },
+        driverFinish: {
+          reps: "Hit exactly 10 final drivers and score each one.",
+          goal: "Try to finish with 7 or more playable drives."
+        },
+        wedgeFlight: {
+          reps: longBlock ? "Hit 18-24 wedges, alternating lower and standard flights." : "Hit 12-18 wedges, alternating lower and standard flights.",
+          goal: "At least half the reps should hit the intended trajectory window and distance window together."
+        },
+        wedgeRoutine: {
+          reps: longBlock ? "Play 10-12 one-ball wedge reps with full routine." : "Play 6-8 one-ball wedge reps with full routine.",
+          goal: "Land at least 60% inside your target yardage window."
+        },
+        wedgePressure: {
+          reps: longBlock ? "Hit 12-15 wedges to one scoring number." : "Hit 8-10 wedges to one scoring number.",
+          goal: "Complete a streak of 3 solid shots in the correct distance window before moving on."
+        },
+        approachStock: {
+          reps: longBlock ? "Hit 18-24 scoring-iron approach shots." : "Hit 12-16 scoring-iron approach shots.",
+          goal: "At least 60% should finish inside your imagined green or target zone."
+        },
+        approachRandom: {
+          reps: longBlock ? "Play 10-12 one-ball approach reps while changing clubs." : "Play 6-8 one-ball approach reps while changing clubs.",
+          goal: "Make a clear target decision each time and produce at least half the shots with the intended window."
+        },
+        approachPins: {
+          reps: longBlock ? "Hit 15-18 approach shots to front, middle, and back targets." : "Hit 9-12 approach shots to front, middle, and back targets.",
+          goal: "Make the correct target choice first, then try to hit at least 50% into the correct section."
+        },
+        approachPressure: {
+          reps: longBlock ? "Simulate 8-10 must-execute approach shots." : "Simulate 5-7 must-execute approach shots.",
+          goal: "Score at least half as successful approaches by your own green-hitting standard."
+        },
+        holeSimulation: {
+          reps: longBlock ? "Play 5-6 simulated holes: tee shot plus approach." : "Play 3-4 simulated holes: tee shot plus approach.",
+          goal: "Win at least half the holes by producing two solid decisions and two playable shots."
+        },
+        shortWarmup: {
+          reps: longBlock ? "Hit 12-16 easy chips and roll 12-16 short putts." : "Hit 8-10 easy chips and roll 8-10 short putts.",
+          goal: "Get comfortable with contact and speed before moving into score-based practice."
+        },
+        landingSpot: {
+          reps: longBlock ? "Hit 20-24 chips to one landing zone." : "Hit 12-18 chips to one landing zone.",
+          goal: "At least 60% should land on or very near your intended spot."
+        },
+        lagPutting: {
+          reps: longBlock ? "Roll 18-24 lag putts from multiple distances." : "Roll 12-16 lag putts from multiple distances.",
+          goal: "Finish at least 70% inside a 3-foot circle."
+        },
+        puttingGate: {
+          reps: longBlock ? "Hit 20-30 short putts through the gate." : "Hit 14-20 short putts through the gate.",
+          goal: "Roll at least 80% cleanly through the gate."
+        },
+        upAndDown: {
+          reps: longBlock ? "Play 8-10 up-and-down attempts." : "Play 5-7 up-and-down attempts.",
+          goal: "Convert at least half of the attempts in two strokes or fewer."
+        },
+        pressurePutting: {
+          reps: longBlock ? "Hit 12-16 must-make short putts." : "Hit 8-12 must-make short putts.",
+          goal: "Complete your required streak before ending the block."
+        },
+        chipTrajectory: {
+          reps: longBlock ? "Hit 18-24 chips using at least two trajectories." : "Hit 12-16 chips using at least two trajectories.",
+          goal: "Produce the intended trajectory and rollout pattern on at least half the reps."
+        },
+        aroundGreen: {
+          reps: longBlock ? "Play 8-10 random chips from different lies." : "Play 5-7 random chips from different lies.",
+          goal: "Get at least 60% inside a makeable putting range."
+        },
+        puttWarmup: {
+          reps: longBlock ? "Roll 18-24 easy putts to settle in." : "Roll 12-16 easy putts to settle in.",
+          goal: "Focus on clean roll and pace, not score, until touch feels consistent."
+        },
+        longPace: {
+          reps: longBlock ? "Roll 14-18 long putts from varied distances." : "Roll 10-12 long putts from varied distances.",
+          goal: "Leave at least 70% inside your 3-foot circle."
+        },
+        slopeSpeed: {
+          reps: longBlock ? "Roll 16-20 putts on uphill and downhill lines." : "Roll 10-14 putts on uphill and downhill lines.",
+          goal: "Match pace to slope and leave most putts in a comfortable tap-in range."
+        },
+        lagPressure: {
+          reps: longBlock ? "Run 10-12 lag putts in a pressure game." : "Run 6-8 lag putts in a pressure game.",
+          goal: "Complete the block only after finishing a streak of putts inside the target zone."
+        },
+        makeRate: {
+          reps: longBlock ? "Hit 20-24 putts from 3 to 6 feet." : "Hit 12-18 putts from 3 to 6 feet.",
+          goal: "Make at least 70% of the putts."
+        },
+        aroundWorld: {
+          reps: longBlock ? "Play 10-12 putts from different angles around one hole." : "Play 6-8 putts from different angles around one hole.",
+          goal: "Complete the circle with a strong make percentage or repeat missed stations."
+        },
+        streakPutting: {
+          reps: longBlock ? "Attempt 12-16 short putts with a streak requirement." : "Attempt 8-12 short putts with a streak requirement.",
+          goal: "Finish the streak goal you set, such as 5 or 6 in a row."
+        },
+        par18: {
+          reps: longBlock ? "Play 9 short-game holes in a Par-18 format." : "Play 6 short-game holes in a Par-18 format.",
+          goal: "Try to beat par or your previous best score."
+        }
+      };
+
+      return map[goalType] || {
+        reps: "Complete the drill with deliberate reps and full focus.",
+        goal: "Use a simple measurable standard and try to beat it next session."
+      };
+    }
+
+    function buildAreaPlan(area, minutes, focus) {
+      if (minutes <= 0) return [];
+
+      const durations = splitMinutes(minutes);
+      const drills = getDrillSet(area, focus);
+
+      return durations.map((duration, index) => {
+        const drill = drills[index % drills.length];
+        const prescription = getPrescription(drill.goalType, duration);
+
+        return {
+          area,
+          duration,
+          title: drill.title,
+          description: drill.description,
+          repTarget: prescription.reps,
+          successGoal: prescription.goal
+        };
+      });
+    }
+
+    function formatAreaName(area) {
+      return area === "range" ? "Driving Range" : "Chipping / Putting Area";
+    }
+
+    function formatFocusName(value) {
+      const currentOptions = [...focusSelect.options];
+      const match = currentOptions.find(option => option.value === value);
+      return match ? match.textContent : "No specific focus";
+    }
+
+    function formatTimeRange(startMinute, endMinute) {
+      return `${startMinute}-${endMinute} min`;
+    }
+
+    function buildPlan(totalMinutes, focus, areas) {
+      const areaMinutes = calculateAreaMinutes(totalMinutes, focus, areas);
+
+      let timeline = [];
+      const rangeItems = buildAreaPlan("range", areaMinutes.range, focus);
+      const shortItems = buildAreaPlan("short", areaMinutes.short, focus);
+
+      if (areas.length === 2) {
+        timeline = [...rangeItems, ...shortItems];
+      } else if (areas[0] === "range") {
+        timeline = rangeItems;
+      } else {
+        timeline = shortItems;
+      }
+
+      return {
+        totalMinutes,
+        focusLabel: formatFocusName(focus),
+        areaMinutes,
+        items: timeline
+      };
+    }
+
+    function renderPlan(plan) {
+      let runningMinute = 0;
+      let itemMarkup = "";
+      let plainText = "";
+
+      plan.items.forEach((item, index) => {
+        const startMinute = runningMinute;
+        const endMinute = runningMinute + item.duration;
+        runningMinute = endMinute;
+
+        itemMarkup += `
+          <article class="plan-item">
+            <div class="plan-top">
+              <div class="time-badge">${formatTimeRange(startMinute, endMinute)} · ${item.duration} min</div>
+              <div class="area-badge">${formatAreaName(item.area)}</div>
+            </div>
+            <h3>${index + 1}. ${item.title}</h3>
+            <p>${item.description}</p>
+            <div class="plan-meta">
+              <p><strong>Suggested rep target:</strong> ${item.repTarget}</p>
+              <p><strong>Success goal:</strong> ${item.successGoal}</p>
+            </div>
+          </article>
+        `;
+
+        plainText += `${index + 1}. ${formatTimeRange(startMinute, endMinute)} | ${formatAreaName(item.area)} | ${item.title}\n`;
+        plainText += `${item.description}\n`;
+        plainText += `Suggested rep target: ${item.repTarget}\n`;
+        plainText += `Success goal: ${item.successGoal}\n\n`;
+      });
+
+      const areasUsed = [];
+      if (plan.areaMinutes.range > 0) areasUsed.push("Driving Range");
+      if (plan.areaMinutes.short > 0) areasUsed.push("Chipping / Putting Area");
+
+      latestPlainTextPlan =
+`Golf Practice Plan
+Areas: ${areasUsed.join(" + ")}
+Focus: ${plan.focusLabel}
+Total Time: ${plan.totalMinutes} minutes
+Driving Range Time: ${plan.areaMinutes.range} minutes
+Chipping / Putting Time: ${plan.areaMinutes.short} minutes
+
+${plainText}`.trim();
+
+      planOutput.innerHTML = `
+        <p class="helper-text">
+          Here is a session built around your choices. The blocks below add up exactly to
+          <strong>${plan.totalMinutes} minutes</strong>.
+        </p>
+
+        <div class="summary-grid">
+          <div class="summary-box">
+            <span>Practice areas</span>
+            <strong>${areasUsed.join(" + ")}</strong>
+          </div>
+          <div class="summary-box">
+            <span>Focus</span>
+            <strong>${plan.focusLabel}</strong>
+          </div>
+          <div class="summary-box">
+            <span>Total time</span>
+            <strong>${plan.totalMinutes} minutes</strong>
+          </div>
+        </div>
+
+        <div class="summary-grid">
+          <div class="summary-box">
+            <span>Driving range</span>
+            <strong>${plan.areaMinutes.range} minutes</strong>
+          </div>
+          <div class="summary-box">
+            <span>Chipping / putting area</span>
+            <strong>${plan.areaMinutes.short} minutes</strong>
+          </div>
+          <div class="summary-box">
+            <span>Plan style</span>
+            <strong>${plan.items.length} drill block${plan.items.length === 1 ? "" : "s"}</strong>
+          </div>
+        </div>
+
+        <div class="plan-list">
+          ${itemMarkup}
+        </div>
+
+        <p class="footer-note">
+          Regenerate the plan if you want a different emphasis. Because each block has a rep target and a success goal,
+          you can also reuse the app to track whether your practice sessions are actually getting better.
+        </p>
+      `;
+
+      copyBtn.disabled = false;
+    }
+
+    function handleGenerate() {
+      const areas = getSelectedAreas();
+      const focus = focusSelect.value;
+      const totalMinutes = Number(timeSelect.value);
+
+      if (areas.length === 0) {
+        planOutput.innerHTML = `
+          <p class="error-text">Choose at least one practice area before generating a plan.</p>
+        `;
+        copyBtn.disabled = true;
+        latestPlainTextPlan = "";
+        return;
+      }
+
+      const plan = buildPlan(totalMinutes, focus, areas);
+      renderPlan(plan);
+    }
+
+    async function handleCopy() {
+      if (!latestPlainTextPlan) return;
+
+      try {
+        await navigator.clipboard.writeText(latestPlainTextPlan);
+        copyBtn.textContent = "Copied";
+        setTimeout(() => {
+          copyBtn.textContent = "Copy plan text";
+        }, 1400);
+      } catch (error) {
+        copyBtn.textContent = "Copy failed";
+        setTimeout(() => {
+          copyBtn.textContent = "Copy plan text";
+        }, 1400);
+      }
+    }
+
+    rangeCheckbox.addEventListener("change", updateFocusOptions);
+    shortGameCheckbox.addEventListener("change", updateFocusOptions);
+    generateBtn.addEventListener("click", handleGenerate);
+    copyBtn.addEventListener("click", handleCopy);
+
+    updateFocusOptions();
+  </script>
+</body>
+</html>

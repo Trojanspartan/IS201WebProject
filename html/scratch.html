@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tyler Reese | Golf Progress Page</title>
+  <link rel="stylesheet" href="../css/scratch.css">
+  <script type="module" src="https://public.tableau.com/javascripts/api/tableau.embedding.3.latest.min.js"></script>
+</head>
+<body>
+  <div class="scratch-shell" id="top">
+    <div class="floating-note">From-scratch page</div>
+
+    <div class="topbar">
+      <a href="index.html">Home</a>
+      <a href="resume.html">Résumé</a>
+      <a href="app.html">Web App</a>
+      <a href="#tableau">Jump to Tableau</a>
+    </div>
+
+    <div class="hero-box">
+      <div class="hero-text">
+        <h1>Golf, practice, and steady improvement</h1>
+        <p>
+          One of my interests is learning golf. I like it because progress is measurable, the skill ceiling is high,
+          and small technical changes can make a big difference over time.
+        </p>
+      </div>
+      <div class="hero-image">
+        <img src="../images/golf-illustration.svg" alt="Illustrated golf scene">
+      </div>
+    </div>
+
+    <div class="link-row">
+      <a href="#practice-plan">Practice Plan</a>
+      <a href="#video-section">Video</a>
+      <a href="#tableau">Tableau Graph</a>
+      <a href="app.html">Open the mini web app</a>
+    </div>
+
+    <div class="content-grid">
+      <div class="card-box" id="practice-plan">
+        <h2>How I would structure a week of practice</h2>
+        <ol>
+          <li>Short game focus
+            <ul>
+              <li>Lag putting from 20 to 40 feet</li>
+              <li>Three-foot pressure putts</li>
+              <li>Simple chipping contact drills</li>
+            </ul>
+          </li>
+          <li>Ball striking focus
+            <ul>
+              <li>Half-swing wedge work</li>
+              <li>Alignment stick drill for start line</li>
+              <li>Impact location check with foot spray</li>
+            </ul>
+          </li>
+          <li>On-course decision making
+            <ul>
+              <li>Play for the widest part of the fairway</li>
+              <li>Aim away from the biggest miss</li>
+              <li>Choose targets before every shot</li>
+            </ul>
+          </li>
+        </ol>
+        <p><a href="#top">Back to top</a></p>
+      </div>
+
+      <div class="card-box" id="video-section">
+        <h2>Useful video</h2>
+        <p>This embedded YouTube lesson is about the fundamentals of a golf swing.</p>
+        <div class="video-wrapper">
+          <iframe
+            src="https://www.youtube.com/embed/me5gjIUe1Ks"
+            title="How to Swing a Golf Club"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen>
+          </iframe>
+        </div>
+      </div>
+
+      <section class="card-box scratch-section scratch-tableau-section wide-box" id="tableau">
+        <h2>Interactive Golf Dashboard</h2>
+        <p>
+            This Tableau dashboard tracks golf performance metrics like score, fairway percentage,
+            greens in regulation, and putts per GIR.
+        </p>
+
+        <div class="tableau-wrap">
+            <tableau-viz
+                id="tableauViz"
+                src="https://public.tableau.com/views/GolfDashboard/GolfDash?:showVizHome=no"
+                toolbar="bottom"
+                hide-tabs>
+            </tableau-viz>
+        </div>
+    </section>   
+    </div>
+  </div>
+</body>
+</html>

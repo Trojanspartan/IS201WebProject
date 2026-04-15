@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="520" viewBox="0 0 800 520" role="img" aria-labelledby="title desc">
+  <title id="title">Golf illustration</title>
+  <desc id="desc">Stylized golf course with hills, flag, and ball</desc>
+  <rect width="800" height="520" rx="28" fill="#dfeee3"/>
+  <rect y="0" width="800" height="220" fill="#d9eaf7"/>
+  <circle cx="660" cy="90" r="42" fill="#f5d776"/>
+  <path d="M0 260 C120 220, 220 220, 320 250 C420 280, 560 280, 800 220 L800 520 L0 520 Z" fill="#79a86f"/>
+  <path d="M0 320 C160 280, 260 320, 420 300 C580 280, 690 330, 800 300 L800 520 L0 520 Z" fill="#5f8f5a"/>
+  <ellipse cx="525" cy="318" rx="142" ry="52" fill="#9fce86"/>
+  <rect x="558" y="180" width="8" height="150" fill="#4b5c6b"/>
+  <path d="M566 180 L648 208 L566 232 Z" fill="#7a2e2e"/>
+  <circle cx="300" cy="382" r="10" fill="#ffffff"/>
+  <circle cx="300" cy="382" r="2.5" fill="#d9dee5"/>
+  <text x="48" y="70" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700" fill="#16324f">Learning golf</text>
+  <text x="48" y="112" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#35536c">One rep, one drill, one improvement at a time.</text>
+</svg>
